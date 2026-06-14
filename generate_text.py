@@ -8,6 +8,11 @@ import wave
 from pathlib import Path
 
 
+class ShortAudioError(Exception):
+    """Raised when an input audio file is too short to process."""
+
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Generate an Excel file with wav file names and Google STT text."
@@ -123,6 +128,15 @@ def prepare_wav_for_google(wav_path: Path) -> tuple[bytes, int, int]:
     audio_format = info["audio_format"]
     sample_rate_hertz = info["sample_rate"]
     audio_channel_count = info["channels"]
+
+    # Calculate duration in seconds and skip files <= 3s
+    bytes_per_sample = info["bits_per_sample"] // 8
+    if bytes_per_sample <= 0 or audio_channel_count <= 0 or sample_rate_hertz <= 0:
+        raise ValueError("Invalid WAV format for duration calculation")
+    num_samples = len(audio_data) // (audio_channel_count * bytes_per_sample)
+    duration_seconds = num_samples / float(sample_rate_hertz)
+    if duration_seconds <= 3.0:
+        raise ShortAudioError(f"Audio duration {duration_seconds:.2f}s <= 3s")
 
     if audio_format == 1 and info["bits_per_sample"] == 16:
         return wav_path.read_bytes(), sample_rate_hertz, audio_channel_count
@@ -253,6 +267,8 @@ def main() -> None:
         print(f"Transcribing: {wav_path.name}")
         try:
             text = transcribe_wav(client, speech, wav_path, args.language)
+        except ShortAudioError as exc:
+            text = f"SKIPPED: {exc}"
         except Exception as exc:
             text = f"ERROR: {exc}"
         print(f"File==>>>> {wav_path.name}, Text==>>>> {text}")
