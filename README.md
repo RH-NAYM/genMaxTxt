@@ -6,6 +6,7 @@ It has two main scripts:
 
 - `generate_text.py`: transcribes `.wav` files with Google Cloud Speech-to-Text.
 - `normalize_excel_with_gemini.py`: normalizes transcript text with Gemini 2.5 Flash on Vertex AI.
+- `rename_audio_files_from_excel.py`: renames WAV files from the normalized workbook and writes a new Excel file with the updated names.
 
 ## Features
 
@@ -59,6 +60,7 @@ Do not commit this file. It is already ignored by `.gitignore`.
 .
 ├── generate_text.py
 ├── normalize_excel_with_gemini.py
+├── rename_audio_files_from_excel.py
 ├── requirements.txt
 ├── service_account.json        # local only, do not commit
 ├── wav_text.xlsx               # generated transcript file
@@ -204,6 +206,8 @@ The script skips audio files already present in the output file with a normalize
 
 `wav_text_normalized_3_columns.xlsx` is produced by `normalize_excel_with_gemini.py`.
 
+`wav_text_renamed.xlsx` is produced by `rename_audio_files_from_excel.py`.
+
 You can safely choose new output names with `--output`.
 
 ## Developer Notes
@@ -284,6 +288,33 @@ The normalizer expects its output file to use the 3-column format. Use a new out
 
 ```bash
 python normalize_excel_with_gemini.py --file wav_text.xlsx --output new_normalized.xlsx
+```
+
+### Rename audio files from the normalized workbook
+
+Run:
+
+```bash
+python rename_audio_files_from_excel.py
+```
+
+Default behavior:
+
+- reads `wav_text_normalized_3_columns.xlsx`
+- checks whether each `audio file` exists in `wavs`
+- renames matching files
+- writes `wav_text_renamed.xlsx` with updated names like `racordsFinal_1.wav`, `racordsFinal_2.wav`, `racordsFinal_3.wav`
+
+Use a different base name:
+
+```bash
+python rename_audio_files_from_excel.py --base-name myRecords
+```
+
+If you want to rename from workbook text instead of sequential names, pass:
+
+```bash
+python rename_audio_files_from_excel.py --name-source "normalize text"
 ```
 
 ## Security
