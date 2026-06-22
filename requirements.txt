@@ -1,3 +1,8 @@
 google-cloud-speech
 google-genai
 openpyxl
+ipython
+ipywidgets
+notebook
+openpyxl
+pandas

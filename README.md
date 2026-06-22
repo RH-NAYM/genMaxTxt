@@ -303,7 +303,7 @@ Default behavior:
 - reads `wav_text_normalized_3_columns.xlsx`
 - checks whether each `audio file` exists in `wavs`
 - renames matching files
-- writes `wav_text_renamed.xlsx` with updated names like `racordsFinal_1.wav`, `racordsFinal_2.wav`, `racordsFinal_3.wav`
+- writes `wav_text_renamed.xlsx` with updated names like `records_3rd_session_1.wav`, `records_3rd_session_2.wav`, `records_3rd_session_3.wav`
 
 Use a different base name:
 

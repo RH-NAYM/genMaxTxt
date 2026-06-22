@@ -70,8 +70,8 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--base-name",
-        default="racordsFinal",
-        help="Base name for sequential filenames. Default: racordsFinal",
+        default="records_3rd_session",
+        help="Base name for sequential filenames. Default: records_3rd_session",
     )
     return parser.parse_args()
 
